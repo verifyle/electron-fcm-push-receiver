@@ -47,36 +47,19 @@ ipcRenderer.on(ON_NOTIFICATION_RECEIVED, (_, notification) => // display notific
 ipcRenderer.send(START_NOTIFICATION_SERVICE, senderId);
 ```
 ### Reseting the Push Receiver
-There are cases where you may need to reset the push receiver to a state where it retrieves a new notification token from FCM. For instance,if your app is designed to support a sign in screen and you only want push notifications for the person who signs in, you will need to have the push receiver delete the notification token when a different person signs in, otherwise it is possible that the new sign in receives notifications that are only private to the person who signed in previously.
+This plugin has been forked and modified from the original in order to support resetting the plugin for a new user, and turning off notifications for a token.
 
-One solution is to simply delete the cache and restart the app using Electron's API. But this is not always desirable. If you want to avoid clearing your app's cache and don't want to restart the app, you can call the reset method on the push receiver. This will have to be called from the renderer process back into the main prcoess. Here is an example of how to setup a callback in the main process:
-
+To reset the receiver, and turn off notifications for any previous token, call this in the main process:
 ```javascript
-ipcRenderer.on('resetPushReceiver', (event, arg) => {
-    pushReceiver.reset();
-})
-```
-Then in your renderer process:
-
-```javascript
- const {ipcRenderer} = require('electron');
- ipcRenderer.send('resetPushReceiver', null);
+pushReceiver.reset();
 ```
 
-If you don't plan on restarting your app, you will have to call the setupPushReceiver method again from our renderer process. So in your main process, you would need to setup another callback first:
-
+To re-initialize the plugin, call this from the main process:
 ```javascript
-ipcRenderer.on('startPushReceiver', (event, arg) => {
-    pushReceiver.setup(mMainWindow.webContents);
-})
+pushReceiver.setup(mMainWindow.webContents);
 ```
+NOTE: You also need to call the above line at setup, when you're creating the window.  It must be initialized before the ``did-load`` event as per original plugin spec.
 
-And then call it from your renderer process:
-
-```javascript
-const {ipcRenderer} = require('electron');
- ipcRenderer.send('startPushReceiver', null);
-```
 ## Example
 
 Thanks to [CydeSwype](https://github.com/CydeSwype), you can find an example project [here](https://github.com/CydeSwype/electron-fcm-demo).
