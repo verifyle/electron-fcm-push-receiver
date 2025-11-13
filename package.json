@@ -8,7 +8,7 @@
   "license": "MIT",
   "types": "src/electron-fcm-push-receiver.d.ts",
   "dependencies": {
-    "@liamcottle/push-receiver": "github:liamcottle/push-receiver#0.0.2",
+    "@liamcottle/push-receiver": "https://github.com/liamcottle/push-receiver/commit/7583c08dcadab98f56dea6beca5ad7f3cde92eea",
     "electron-config": "^1.0.0"
   },
   "devDependencies": {
